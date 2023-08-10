@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- Created as an example by https://github.com/mcphee11 Version 2.0 -->
+<html>
+  <head>
+    <meta name="robots" content="noindex" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="Template" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Genesys CSS https://spark.genesys.com/ -->
+    <link href="https://dhqbrvplips7x.cloudfront.net/common-ui-docs/genesys-webcomponents/3.82.1-155/genesys-webcomponents/genesys-webcomponents.css" rel="stylesheet" />
+    <script type="module" src="https://dhqbrvplips7x.cloudfront.net/common-ui-docs/genesys-webcomponents/3.82.1-155/genesys-webcomponents/genesys-webcomponents.esm.js"></script>
+    <!-- Genesys SDK info https://developer.genesys.cloud/ -->
+    <script src="https://sdk-cdn.mypurecloud.com/javascript/latest/purecloud-platform-client-v2.min.js"></script>
+    <script src="https://sdk-cdn.mypurecloud.com/webrtc-sdk/v7/genesys-cloud-webrtc-sdk.bundle.min.js"></script>
+    <script src="/genesys-core.js"></script>
+    <script src="/events.js"></script>
+    <script src="/webrtc.js" defer></script>
+  </head>
+  <body>
+    <div id="users" style="display: flex; justify-content: center"></div>
+    <div style="padding: 8px">
+      <gux-dropdown id="dropdown">
+        <gux-listbox aria-label="Users">
+          <gux-option-icon id="AVAILABLE" icon-name="user" icon-color="#77dd22" value="AVAILABLE">Available</gux-option-icon>
+          <gux-option-icon id="BUSY" icon-name="user" icon-color="#ff0000" value="BUSY">Busy</gux-option-icon>
+          <gux-option-icon id="ON_QUEUE" icon-name="user" icon-color="#52cef8" value="ON_QUEUE">On Queue</gux-option-icon>
+        </gux-listbox>
+      </gux-dropdown>
+    </div>
+
+    <div id="error" hidden>
+      <gux-blank-state-beta class="blank-state-styling">
+        <gux-icon slot="image" icon-name="robot-circle" decorative="true"></gux-icon>
+        <div slot="primary-message">Sorry, something went wrong.</div>
+        <div slot="additional-guidance">Have you logged in via OKTA?</div>
+        <button slot="call-to-action" type="button">Reload</button>
+      </gux-blank-state-beta>
+    </div>
+    <!-- <gux-radial-loading id="loading" screenreader-text="Loading..." style="display: grid; justify-content: center; height: 90vh; align-content: center"></gux-radial-loading> -->
+    <div id="container">
+      <gux-tabs class="example" alignment="full-width">
+        <gux-tab-list slot="tab-list">
+          <gux-tab tab-id="1-1" id="tabrange">Active</gux-tab>
+          <gux-tab tab-id="1-2" id="tabday">Workbin</gux-tab>
+          <gux-tab tab-id="1-3" id="tabHelp">Help</gux-tab>
+        </gux-tab-list>
+        <!-- TAB 1-1 Start -->
+        <gux-tab-panel tab-id="1-1">
+          <div id="active"></div>
+        </gux-tab-panel>
+        <!-- TAB 1-2 Start -->
+        <gux-tab-panel tab-id="1-2">
+          <div id="workbin"></div>
+        </gux-tab-panel>
+        <!-- TAB 1-3 Start -->
+        <gux-tab-panel tab-id="1-3"> </gux-tab-panel>
+      </gux-tabs>
+    </div>
+  </body>
+</html>

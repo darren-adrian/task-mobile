@@ -1,0 +1,16 @@
+PATCH: https://api.mypurecloud.com.au/api/v2/taskmanagement/workitems/476a285f-9de1-4201-bc45-abf3818045b1
+{"assignmentState":"Connected"}
+
+
+
+Topic: {id: "v2.taskmanagement.workitems.users.cb261c76-890c-47c8-b2ac-fc9323e8efa2"}
+
+
+https://apps.mypurecloud.com.au/task-routing-agent-ui/#/workitems/ec7e5c14-eb32-46ff-aa91-1b29cfc62c2b/detail
+https://apps.mypurecloud.com.au/task-routing-agent-ui/#/workitems/ec7e5c14-eb32-46ff-aa91-1b29cfc62c2b/status
+https://apps.mypurecloud.com.au/task-routing-agent-ui/#/workitems/ec7e5c14-eb32-46ff-aa91-1b29cfc62c2b/wrapup
+
+
+PATCH: https://api.mypurecloud.com.au/api/v2/taskmanagement/workitems/ec7e5c14-eb32-46ff-aa91-1b29cfc62c2b
+{"assignmentState":"Parked"}
+
