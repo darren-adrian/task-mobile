@@ -37,11 +37,17 @@ window.addEventListener('click', async (e) => {
       eventsWorkItemDetails(e.target.parentNode.parentNode.id)
       break
     case 'statusChange':
-      console.log('Change Status 2nd Level')
-      eventsStatusSecondLevel(e.target.parentNode.parentNode.id)
-      document.getElementById(e.target.parentNode.parentNode.id).remove()
+      eventsChangeStatus(e.target.parentNode.parentNode.id)
       break
-    default:
+//    console.log('Change Status 2nd Level')
+//     eventsStatusSecondLevel(e.target.parentNode.parentNode.id)
+//      document.getElementById(e.target.parentNode.parentNode.id).remove()
+//      break
+      case 'buttonTest':
+        console.log('TestButton')
+        eventsTest(e.target.parentNode.parentNode.id)
+        break
+      default:
       console.log(e.target.id)
   }
 })
@@ -112,6 +118,24 @@ async function eventsStatusSecondLevel(workItemId) {
   }) 
   console.log(item)
 }
+async function eventsTest(workItemId) {
+  let current = await tapi.getTaskmanagementWorkitem(workItemId,  {
+    expands: 'status',
+  }) 
+  console.log(current)
+
+
+let statusList = await tapi.getTaskmanagementWorktypeStatus(current.type.id, current.status.id)
+console.log(statusList)
+
+for (const statuses of statusList.destinationStatuses) {
+ // item.assignmentState === "Connected" ? coreBuildConnectedWorkItem(item.id, item.name, item.statusCategory, item.description, item.status.name) : coreBuildParkedWorkItem(item.id, item.name, item.statusCategory, item.description, item.status.name)
+  console.log(statuses.id)
+}
+
+
+
+}
 
 async function eventsWorkItemDetails(workItemId) {
   let details = await tapi.getTaskmanagementWorkitem(workItemId)
@@ -160,6 +184,86 @@ async function eventsWorkItemDetails(workItemId) {
   div.appendChild(modal)
   document.getElementById('active').appendChild(div)
 }
+
+
+async function eventsChangeStatus(workItemId) {
+
+  let current = await tapi.getTaskmanagementWorkitem(workItemId,  {
+    expands: 'status',
+  }) 
+  console.log(current)
+
+  let statusList = await tapi.getTaskmanagementWorktypeStatus(current.type.id, current.status.id)
+
+  let div = document.createElement('div')
+  let modal = document.createElement('gux-modal')
+  let slot1 = document.createElement('div')
+  let slot2 = document.createElement('div')
+  let slot3 = document.createElement('div')
+  let slot4 = document.createElement('div')
+  let slot5 = document.createElement('div')
+  let dropdown = document.createElement('gux-dropdown')
+  let listbox = document.createElement('gux-listbox')
+  let buttonDone = document.createElement('gux-button')
+
+
+  modal.setAttribute('initial-focus', '#call')
+  modal.setAttribute('size', 'small')
+  slot1.slot = 'title'
+  slot1.innerText = 'Change Workitem Status'
+  slot2.slot = 'content'
+  slot2.innerText = `Category: ${current.statusCategory}
+  Status: ${current.status.name}`
+
+  slot3.slot = 'left-align-buttons'
+  slot4.slot = 'right-align-buttons'
+
+  dropdown.setAttribute('placeholder', 'Select a Status')
+  dropdown.id = 'wrapup_code'
+  listbox.style = 'max-height: 50vh;'
+   
+  slot3.slot = 'content'
+  dropdown.setAttribute('placeholder', 'Select a Status')
+  dropdown.id = 'updateStatus'
+  listbox.style = 'max-height: 50vh;'
+   for (const statuses of statusList.destinationStatuses) {
+    let row = document.createElement('gux-option')
+    let statusName = await tapi.getTaskmanagementWorktypeStatus(current.type.id, statuses.id)
+    row.value = statuses.id
+    row.innerText = statusName.name
+    listbox.appendChild(row)
+  }
+
+  slot4.slot = 'right-align-buttons'
+  buttonDone.id = 'wrapup-done'
+  buttonDone.onclick = async function () {
+    let item = await tapi.patchTaskmanagementWorkitem(workItemId, {
+      statusId: document.getElementById('updateStatus').value,
+    }) 
+  
+    console.log(item)
+  }
+  buttonDone.type = 'button'
+  buttonDone.innerText = 'Done'
+  buttonDone.setAttribute('accent', 'primary')
+  
+
+  div.id = 'modal-container'
+  slot4.appendChild(buttonDone)
+  dropdown.appendChild(listbox)
+  slot3.appendChild(dropdown)
+    modal.appendChild(slot1)
+  modal.appendChild(slot2)
+  modal.appendChild(slot3)
+  modal.appendChild(slot4)
+  dropdown.appendChild(listbox)
+    
+  div.appendChild(modal)
+  document.getElementById('active').appendChild(div)
+}
+
+
+
 
 async function eventsWrapUpModel(conversataionId, codes) {
   let div = document.createElement('div')

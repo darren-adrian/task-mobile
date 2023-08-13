@@ -103,7 +103,10 @@ async function start() {
         }
         if (details.topicName.includes('work')) {
           console.log('workItem')
-          details.eventBody.assignmentState === "Connected" ? coreBuildConnectedWorkItem(details.eventBody.id, details.eventBody.name, details.eventBody.statusCategory, details.eventBody.description) : coreBuildParkedWorkItem(details.eventBody.id, details.eventBody.name, details.eventBody.statusCategory, details.eventBody.description)
+          let item2 = await tapi.getTaskmanagementWorkitem(details.eventBody.id,  {
+            expands: 'status',
+          })
+          details.eventBody.assignmentState === "Connected" ? coreBuildConnectedWorkItem(details.eventBody.id, details.eventBody.name, details.eventBody.statusCategory, details.eventBody.description, item2.status.name) : coreBuildParkedWorkItem(details.eventBody.id, details.eventBody.name, details.eventBody.statusCategory, details.eventBody.description, item2.status.name)
         }
         if (details.topicName.includes('presence')) {
           let presence = details.eventBody.presenceDefinition.systemPresence
@@ -210,11 +213,11 @@ async function coreQueryWorkitems() {
   console.log(getWork)
 
   for (const item of getWork.entities) {
-    item.assignmentState === "Connected" ? coreBuildConnectedWorkItem(item.id, item.name, item.statusCategory, item.description) : coreBuildParkedWorkItem(item.id, item.name, item.statusCategory, item.description)
+    item.assignmentState === "Connected" ? coreBuildConnectedWorkItem(item.id, item.name, item.statusCategory, item.description, item.status.name) : coreBuildParkedWorkItem(item.id, item.name, item.statusCategory, item.description, item.status.name)
   }
 }
 
-async function coreBuildParkedWorkItem(workitemId, heading, status, body) {
+async function coreBuildParkedWorkItem(workitemId, heading, status, body, statusName) {
   let card = document.createElement('gux-card-beta')
   let div = document.createElement('div')
   let h2 = document.createElement('h2')
@@ -227,7 +230,7 @@ async function coreBuildParkedWorkItem(workitemId, heading, status, body) {
   card.style = 'width: 100%; padding-top: 12px;'
   div.style = 'display: flex;'
   h2.innerText = heading
-  h4.innerText = status
+  h4.innerText = status + "-" + statusName
   h4.style.padding = '8px'
   h4.style.color = 'white'
   if (status === 'Open') h4.style.backgroundColor = '#8452cf'
@@ -247,7 +250,7 @@ async function coreBuildParkedWorkItem(workitemId, heading, status, body) {
   document.getElementById('workbin').appendChild(card)
 }
 
-async function coreBuildConnectedWorkItem(workitemId, heading, status, body) {
+async function coreBuildConnectedWorkItem(workitemId, heading, status, body, statusName) {
   let card = document.createElement('gux-card-beta')
   let div = document.createElement('div')
   let h2 = document.createElement('h2')
@@ -255,6 +258,7 @@ async function coreBuildConnectedWorkItem(workitemId, heading, status, body) {
   let buttonPark = document.createElement('gux-button')
   let buttonDetails = document.createElement('gux-button')
   let buttonStatus = document.createElement('gux-button')
+  let buttonTest = document.createElement('gux-button')
   let p = document.createElement('p')
 
   card.id = workitemId
@@ -262,7 +266,7 @@ async function coreBuildConnectedWorkItem(workitemId, heading, status, body) {
   card.style = 'width: 100%; padding-top: 12px;'
   div.style = 'display: flex;'
   h2.innerText = heading
-  h4.innerText = status
+  h4.innerText = status + "-" + statusName
   h4.style.padding = '8px'
   h4.style.color = 'white'
   if (status === 'Open') h4.style.backgroundColor = '#8452cf'
@@ -276,9 +280,12 @@ async function coreBuildConnectedWorkItem(workitemId, heading, status, body) {
   buttonDetails.id = 'detailsTask'
   buttonDetails.style = 'position: absolute; right: 120px;'
   buttonDetails.innerText = 'Details'
-  buttonStatus.id = ' statusChange'
+  buttonStatus.id = 'statusChange'
   buttonStatus.style = 'position: absolute; right: 200px;'
-  buttonStatus.innerText = '2nd Level'
+  buttonStatus.innerText = 'Change Status'
+  //buttonTest.id = 'buttonTest'
+  //buttonTest.style = 'position: absolute; right: 280px;'
+  //buttonTest.innerText = 'Test'
   buttonDetails.setAttribute('accent', 'primary')
   p.innerText = body
 
@@ -286,6 +293,7 @@ async function coreBuildConnectedWorkItem(workitemId, heading, status, body) {
   div.appendChild(buttonPark)
   div.appendChild(buttonDetails)
   div.appendChild(buttonStatus)
+  //div.appendChild(buttonTest)
   card.appendChild(div)
   card.appendChild(h4)
   card.appendChild(p)
